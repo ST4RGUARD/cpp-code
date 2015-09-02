@@ -1,10 +1,19 @@
 #include <iostream>
 #include <string>
+#include <time.h>
+#include "people.h"
+//#include "ourlib.h"                   //  include custom header 
+
 #define PI 3.14
 
 using namespace std;
 
 // hodgepodge of fundamental c++ concepts and examples
+
+enum dayOfWeek{M,TU=3,W,TH,F,SA,SU};
+
+// extern int a; //external var means we don't reserve mem for it - 
+// used in this code or other cpp file but def extern in hdr 
 
 // function declarations
 int power(int, int);
@@ -12,6 +21,30 @@ void user_options();
 void select_shape(int);
 void calc_shape_area(double, double, int);
 bool is_valid(string);
+string getDay(dayOfWeek);
+void swap(int &, int &);
+void lottery(int, int);
+void test_construc_destruc();
+void change_data(PersonalData, int);
+
+// class template
+// in .h class temp like func change all types to T - 
+// template<typename T> 
+// class - Add<T>::func(T x) construc & for deconstructor
+// function template
+template<typename T, typename T2>
+T add(T var1, T var2)
+{
+  return var1 + var2;
+}
+
+struct personal_data {
+  string name;
+  string surname;
+  string number;
+  short age;
+} mine,yours;
+
 // overloading functions
 double power(double, int);
 // inline function
@@ -34,6 +67,27 @@ int fib(int n) {
 	}
 }
 
+// namespaces
+namespace A
+{
+  int ns = 20;
+}
+
+namespace mySpace
+{
+  class MyNewLine
+  {
+    string text;
+  public:
+    MyNewLine(string text = "\n\n\n") { this->text = text; }
+    string toString()
+    {
+      return text;
+    }
+  };
+  MyNewLine endl;
+}
+
 int main() {
 	short  t1;    // -32768 to 32767, 2bytes
 	float  t2;    // 4bytes up to 38 zeros
@@ -45,9 +99,53 @@ int main() {
 	string combine = t5 + t6;
 	const string NAMEOFGAME = "the due";
 	bool   t7 = true;
-	int a,b,num, choice;
+	int a,b,num, choice,t;
+  int ref1 = 10;
+  int ref2 = 20;
+  int p_var = 5;
+  int *p_v1;      // asterisk here is used to declare this var a pointer
+  // pointers
+  // int * const p_v1 is constant ptr can't be re-assigned so has to be initialized to address
+  // ordinary var that store addresses of variables
+  p_v1 = &p_var;
+  cout << "p_var value:  "<< p_var << " address: " << &p_var << endl << endl;
+
+  // asterisk here is used to Retrieve value from indicated (pointed) area in memory (address)
+  cout << "p_v1  pts_to: " << p_v1 << " p_v1 value: " << *p_v1 << "  address: " << &p_v1 << endl ;
+
+  // so can change value of p_var by changing pointer
+  *p_v1 = 20;
+  // or can point to diff var by getting address of that var
+  p_v1 = &ref2;
+  
+  cout << "p_var: " << p_var << endl;
+  cout << "*p: " << *p_v1 << endl;
+
+
+  // reference var - must be initialized when created
+  // can change value but can't change var associated with ref var
+  // ref var must be same type as assoc var
+  string &cmb = combine;
+
+  // just changing x & y in swap not ref1 & ref2 here
+  swap(ref1, ref2);
+
+  cout << "ref1: " << ref1 << endl;
+  cout << "ref2: " << ref2 << endl;
+
+  // enum example
+  dayOfWeek d = TU;
+  cout << d << endl;
+  cout << dayOfWeek(3) << endl;
+  cout << getDay(TU) << endl;
   a = 5;
   
+  B objB;
+  AA objA;
+
+  objA.setSecretvalue(objB,600);
+  cout << objB.getSecretValue() << endl;
+
   change_value(a);
   cout << " a is " << a << endl ;
 	// bitwise practice
@@ -184,6 +282,132 @@ int main() {
 
   } while (cont == 'y' || cont == 'Y');
 
+  // dynamic allocation of memory
+  // need free space AFTER compiling
+  // new - memory belongs only to our program not free
+  
+  int *new_ptr = new int;
+  int new_var = 5555;
+  *new_ptr = 50;
+
+  cout << *new_ptr << endl;
+
+  delete new_ptr;                               // delete - release memory reserved by new to be used later
+  new_ptr = &new_var;                           // after delete we can store address of new var np
+
+  new_ptr = NULL;
+  //*new_ptr = 60;                              // should not do this after delete..memory is not ours
+  if (new_ptr != NULL)                          // here we set a condition if we haven't deleted/freed the memory we can re-assign it
+  {
+    *new_ptr = 60;
+    cout << *new_ptr << endl;
+
+  }
+
+  cout << new_ptr << endl;
+
+  // str to char
+  string text = "blahblah";
+  const char * text2 = text.c_str();
+  cout << text2 << endl;
+
+  // char to str
+  char array[] = "here is text";
+  string test = array;
+  cout << test << endl;
+
+  // prng
+  cout << endl;
+  lottery(49, 6);
+  cout << endl;
+
+  // typedef
+  int test1 = 5;
+  int test2 = 7;
+  cout << (double)test1 / test2 << endl;                    // explicit c
+  cout << double(test1 / test2) << endl;                    // explicit c
+  cout << static_cast<double>(test1 / test2) << endl;       // explicit c++
+
+  int varx = 184378923;                                     // implicit way can lose precision number can be off
+  short vary = varx;
+  cout << vary << endl;
+
+  //strcmp(x,y) - 0 is eq 1 x is > -1 y is >
+  /*for (int i = 0; i < argc; i++)
+  {
+    if (strcmp(argv[i], "-h") == 0 && i == 1)
+      show_help();
+  }*/
+
+  personal_data person[2];
+  person[0].age = 25;
+  person[0].name = "ja";
+  person[0].surname = "rel";
+  person[0].number = "238189";
+
+  mine.age = 30;
+  yours.age = 31;
+
+  cout << person[0].name << endl;
+  cout << person[0].surname << endl;
+  cout << person[0].age << endl;
+  cout << person[0].number << endl;
+
+  person[1].age = 35;
+  person[1].name = "ma";
+  person[1].surname = "rel";
+  person[1].number = "1238189";
+
+  cout << person[1].name << endl;
+  cout << person[1].surname << endl;
+  cout << person[1].age << endl;
+  cout << person[1].number << endl;
+
+  // retrieves the same
+  cout << (*person).name << endl;
+  cout << (*(person + 1)).name << endl;
+  cout << (*&person[0]).name << endl;
+  cout << person->name << endl;
+  cout << (*person).name << endl;
+
+
+  PersonalData personz;
+  PersonalData personz2;
+
+  personz.setAge(50);
+  cout << personz.getAge() << endl;
+  cout << personz2.getAge() << endl;
+
+  // template
+  cout << add(2, 5) << endl;
+  // can specify type
+  cout << add<double, double>(2,5.6) << endl;
+  cout << static_cast<int>(6.5) << endl;
+
+  // exceptions & handling
+  // if we want to check or catch a specific result ex if b == 0 throw b  catch (...) will catch this instance
+  int exc = 5;
+  try
+  {
+    exc *= 10;
+    if (exc == 50)
+      throw exc;
+
+  }
+  catch (int e)
+  {
+    cout << "exc cannot be equal to " << exc << endl;
+  }
+  catch (...)
+  {
+    cout << "msg that is shown when other catch isn't invoked" << endl;
+  }
+
+  // namespaces
+  cout << A::ns << endl;
+  std::cout << "text: " << mySpace::endl.toString();
+
+
 	system("pause");
 }
 
@@ -297,4 +521,73 @@ bool is_valid(string error_msg)
 
   return true;
 
+}
+
+string getDay(dayOfWeek d)
+{
+  switch (d)
+  {
+  case M:
+    return "Monday";
+  case TU:
+    return "Tuesday";
+  case W:
+    return "Wednesday";
+  case TH:
+    return "Thursday";
+  case F:
+    return "Friday";
+  case SA:
+    return "Saturday";
+  case SU:
+    return "Sunday";
+  default:
+    return "you typed something wrong";
+  }
+}
+
+void swap(int &x, int &y) 
+{
+  int t;
+  t = x;
+  x = y;
+  y = t;
+}
+
+void lottery(int total_balls, int balls_to_draw)
+{
+  if (total_balls < balls_to_draw)
+    return;
+
+  srand(time(NULL));
+
+  int *balls = new int[balls_to_draw];
+  for (int i = 0; i < balls_to_draw; i++)
+  {
+    balls[i] = rand() % 49 + 1;
+    for (int j = 0; j < i +1; j++)
+    {
+      if (balls[i] == balls[j] && i != j)
+      {
+        i--;
+        break;
+      } else if (j==i)
+        cout << balls[i] << endl;
+    } 
+  }
+
+  delete[] balls;
+}
+
+void test_construc_destruct() 
+{
+  PersonalData person[5]; // or
+  PersonalData *pointer = new PersonalData[5];
+
+  delete[]pointer;        // free globally allocated memory
+}
+
+void change_data(PersonalData & obj, int value)
+{
+  obj.age = value;      // can't access age - private - make func friend
 }

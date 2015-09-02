@@ -119,6 +119,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CppBasics.cpp" />
+    <ClCompile Include="people.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="people.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
